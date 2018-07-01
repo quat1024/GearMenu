@@ -1,0 +1,16 @@
+[
+{
+  "modid": "gearmenu",
+  "name": "Project Gear Main Menu",
+  "description": "Custom menu experience for Project Gear modpack",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["quaternary"],
+  "credits": "Project Gear development team <3",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -1,0 +1,4 @@
+#These exist because the default ones have an ellipsis at the end >.>
+
+gearmenu.options=Options
+gearmenu.language=Language
