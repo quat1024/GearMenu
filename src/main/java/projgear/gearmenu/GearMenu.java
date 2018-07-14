@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import projgear.gearmenu.gui.screen.GuiMainMenuReplacement;
+import projgear.gearmenu.ui.GuiMainMenuReplacement;
 
 @Mod(modid = GearMenu.MODID, name = GearMenu.NAME, version = GearMenu.VERSION, clientSideOnly = true)
 public class GearMenu {
