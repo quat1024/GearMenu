@@ -1,5 +1,6 @@
 package projgear.gearmenu.ui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
@@ -109,18 +110,25 @@ public class GuiMainMenuReplacement extends GuiScreen {
 				drawTexturedModalRect(x * BG_TILE_SIZE, y * BG_TILE_SIZE, 0, 0, BG_TILE_SIZE * 2, BG_TILE_SIZE * 2);
 			}
 		}
+		
+		//Draw GEARS!!!
+		double t = Minecraft.getSystemTime() / 3000d;
+		
+		GlStateManager.color(.3f, .3f, .3f, 1f);
+		DrawingUtils.drawGear(res.getScaledWidth() + 5, 0, 25, 50, 1.3, t, 10);
+		DrawingUtils.drawGear(-20, res.getScaledHeight(), 30, 65, 1.2, t * 1.2, 9);
+		DrawingUtils.drawGear(30, -30, 40, 80, 1.3, t*1.4, 15);
+		GlStateManager.color(.25f, .25f, .25f, 1f);
+		DrawingUtils.drawGear(140, res.getScaledHeight() + 10, 60, 75, 1.2, (-t * 1.2) - 0.15, 9);
+		DrawingUtils.drawGear(res.getScaledWidth(), res.getScaledHeight(), 10, 20, 1.4, t * .7, 10);
+		
 		//Draw buttons
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		
+		//Draw logo
 		GlStateManager.color(1f, 1f, 1f, 1f);
 		mc.renderEngine.bindTexture(LOGO_RES);
 		drawTexturedModalRect(sideGutter, startButtonY - LOGO_HEIGHT - 20, 0, 0, LOGO_WIDTH, LOGO_HEIGHT);
-		
-		double t = mc.getSystemTime() / 3000d;
-		
-		//Draw GEARS!!!
-		GlStateManager.color(.3f, .3f, .3f, 1f);
-		DrawingUtils.drawGear(res.getScaledWidth() + 5, 0, 25, 50, 1.3, t, 10);
 	}
 	
 	@Override

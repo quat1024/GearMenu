@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 public class DrawingUtils {
+	private DrawingUtils() {}
+	
 	public static final double TAU = Math.PI * 2; //Yeah
 	
 	//Set your own color with GLStateManager before calling.
@@ -34,7 +36,7 @@ public class DrawingUtils {
 		font.drawString(text, x - font.getStringWidth(text) / 2, y, color, false);
 	}
 	
-	public static void drawGear(int centerX, int centerY, int innerRadius, int outerRadius, double outerRadiusToothMultiplier, double rotation, int teeth) {
+	public static void drawGear(double centerX, double centerY, double innerRadius, double outerRadius, double outerRadiusToothMultiplier, double rotation, int teeth) {
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
@@ -47,9 +49,9 @@ public class DrawingUtils {
 		
 		buf.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION);
 		
-		int vertsPerTooth = 10;
+		int vertsPerTooth = 8;
 		
-		int outerRadiusMul = (int) (outerRadius * outerRadiusToothMultiplier);
+		double outerRadiusMul = outerRadius * outerRadiusToothMultiplier;
 		
 		int maxSteps = teeth * vertsPerTooth;
 		for(int step = 0; step <= maxSteps; step++) {
@@ -60,7 +62,7 @@ public class DrawingUtils {
 			double innerX = angleCos * innerRadius;
 			double innerY = angleSin * innerRadius;
 			
-			int outerRadToothApplied = (step % vertsPerTooth < vertsPerTooth / 2) ? outerRadius : outerRadiusMul;
+			double outerRadToothApplied = (step % vertsPerTooth < vertsPerTooth / 2) ? outerRadius : outerRadiusMul;
 			
 			double outerX = angleCos * outerRadToothApplied;
 			double outerY = angleSin * outerRadToothApplied;
