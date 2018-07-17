@@ -5,13 +5,18 @@ import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.client.GuiModList;
+import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.opengl.GL11;
 import projgear.gearmenu.GearMenu;
 import projgear.gearmenu.ui.button.GuiButtonCustom;
+import projgear.gearmenu.ui.button.GuiButtonIcon;
 import projgear.gearmenu.ui.util.DrawingUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiMainMenuReplacement extends GuiScreen {
 	
@@ -27,9 +32,25 @@ public class GuiMainMenuReplacement extends GuiScreen {
 	int sideGutter;
 	int startButtonY;
 	
+	private static final String nonfreeString = "Copyright Mojang AB. Do not distribute!";
+	private int nonfreeWidth = 0;
+	List<String> coolStrings = new ArrayList<>();
+	
 	@Override
 	public void initGui() {
+		/*
+		
+		      🍝       🍝       🍝
+		 🍝               🍝
+		  BE WARNED OF spaghetti 🍝
+		  🍝       🍝         🍝
+		     🍝           🍝
+		     
+		*/
+		
 		ScaledResolution res = new ScaledResolution(mc);
+		
+		//Add the main row of 6 buttons
 		float aspect = (float) res.getScaledWidth() / res.getScaledHeight();
 		
 		int rows;
@@ -42,7 +63,7 @@ public class GuiMainMenuReplacement extends GuiScreen {
 			rows = 6;
 			buttonHeight = 30;
 			buttonVerticalSpacing = 7;
-		} else if(aspect < 1.7f) {
+		} else if(aspect < 1.8f) {
 			//standard aspect. display on 2 rows
 			rows = 2;
 			buttonHeight = 20;
@@ -65,7 +86,7 @@ public class GuiMainMenuReplacement extends GuiScreen {
 		//solve for button width:
 		int buttonWidth = (res.getScaledWidth() - (sideGutter * 2) - (buttonPadding * (columns - 1))) / columns;
 		
-		int i=0;
+		int buttonID=0;
 		for(int row = 0; row < rows; row++) {
 			for(int column = 0; column < columns; column++) {
 				//don't apply spacing between buttons etc when you're the first one in the row or column!
@@ -75,12 +96,46 @@ public class GuiMainMenuReplacement extends GuiScreen {
 				int buttonX = sideGutter + (buttonWidth + effectiveButtonPadding) * column;
 				int buttonY = startButtonY + (buttonHeight + effectiveVerticalSpacing) * row;
 				
-				String buttonTranslationKey = buttonTranslationKeys[i];
+				String buttonTranslationKey = buttonTranslationKeys[buttonID];
 				
-				addButton(new GuiButtonCustom(i, buttonX, buttonY, buttonWidth, buttonHeight, buttonTranslationKey));
-				i++;
+				addButton(new GuiButtonCustom(buttonID, buttonX, buttonY, buttonWidth, buttonHeight, buttonTranslationKey));
+				buttonID++;
 			}
 		}
+		
+		//Add smol baby icon buttons
+		//add them from Right to left
+		
+		int iconButtonWidth = 32;
+		int iconButtonHeight = 32;
+		int iconButtonStartX = res.getScaledWidth() - sideGutter - iconButtonWidth;
+		int iconButtonStartY;
+		
+		//1 sec let me just abuse sideGutter as a general purpose padding amount
+		//I told you to be wary of Spaghetti 🍝🍝🍝🍝🍝🍝🍝
+		if(aspect < 1f) {
+			//tall boy aspect. buttons go in the upper right
+			iconButtonStartY = sideGutter;
+		} else if(aspect < 1.8f) {
+			//standard aspect. buttons go under the rightmost button. this takes 2 rows
+			iconButtonStartY = res.getScaledHeight() / 2 + sideGutter + buttonHeight + buttonVerticalSpacing * 2;
+		} else {
+			//widescreen aspect. buttons also go under the rightmost button but that's a different spot than last time
+			iconButtonStartY = res.getScaledHeight() / 2 + sideGutter + buttonVerticalSpacing * 2; //idfk
+		}
+		
+		for(int i = 0; i < 2; i++) {
+			addButton(new GuiButtonIcon(buttonID, iconButtonStartX - i * (iconButtonWidth + sideGutter), iconButtonStartY, iconButtonWidth, iconButtonHeight, "test"));
+			buttonID++;
+		}
+		
+		//some misc shit
+		nonfreeWidth = mc.fontRenderer.getStringWidth(nonfreeString);
+		
+		coolStrings = new ArrayList<>();
+		coolStrings.add(String.format("%s mods loaded, %s active", Loader.instance().getModList().size(), Loader.instance().getActiveModList().size()));
+		coolStrings.add("MC " + ForgeVersion.mcVersion);
+		coolStrings.add("Forge " + ForgeVersion.getVersion());
 	}
 	
 	private static final ResourceLocation BG_TILE_RES = new ResourceLocation(GearMenu.MODID, "textures/gui/bg_tile.png");
@@ -129,7 +184,22 @@ public class GuiMainMenuReplacement extends GuiScreen {
 		GlStateManager.color(1f, 1f, 1f, 1f);
 		mc.renderEngine.bindTexture(LOGO_RES);
 		drawTexturedModalRect(sideGutter, startButtonY - LOGO_HEIGHT - 20, 0, 0, LOGO_WIDTH, LOGO_HEIGHT);
+		
+		//Draw the text thingies in the corners of the screen
+		mc.fontRenderer.drawStringWithShadow(nonfreeString, width - nonfreeWidth, height - 10, 0x999999);
+		
+		for(int i = 0; i < coolStrings.size(); i++) {
+			int iButBackwards = coolStrings.size() - i;
+			mc.fontRenderer.drawStringWithShadow(coolStrings.get(i), 1, height - 10 * iButBackwards, 0x999999);
+		}
+		
+		//DONT LOOK!!!!!!!!
+		spaghettiSauceMouseX = mouseX;
+		spaghettiSauceMouseY = mouseY;
 	}
+	
+	private int spaghettiSauceMouseX = 0;
+	private int spaghettiSauceMouseY = 0;
 	
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException {
@@ -158,7 +228,7 @@ public class GuiMainMenuReplacement extends GuiScreen {
 				if(button instanceof GuiButtonCustom) {
 					//lmao
 					((GuiButtonCustom)button).setTranslationKey("gearmenu.bye");
-					button.drawButton(mc, 0, 0, 1);
+					button.drawButton(mc, spaghettiSauceMouseX, spaghettiSauceMouseY, 1);
 				}
 				mc.shutdown();
 				break;
